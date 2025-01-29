@@ -1,0 +1,62 @@
+import pandas as pd
+
+# Membuat DataFrame dari data yang diberikan
+data = {
+    "Farm_ID": ["F001", "F002", "F003", "F004", "F005", "F006", "F007", "F008", "F009", "F010",
+                "F011", "F012", "F013", "F014", "F015", "F016", "F017", "F018", "F019", "F020",
+                "F021", "F022", "F023", "F024", "F025", "F026", "F027", "F028", "F029", "F030",
+                "F031", "F032", "F033", "F034", "F035", "F036", "F037", "F038", "F039", "F040",
+                "F041", "F042", "F043", "F044", "F045", "F046", "F047", "F048", "F049", "F050"],
+    "Crop_Type": ["Cotton", "Carrot", "Sugarcane", "Tomato", "Tomato", "Sugarcane", "Soybean", "Rice", "Maize", "Soybean",
+                  "Rice", "Sugarcane", "Wheat", "Rice", "Sugarcane", "Barley", "Carrot", "Maize", "Maize", "Barley",
+                  "Cotton", "Wheat", "Potato", "Rice", "Barley", "Wheat", "Cotton", "Tomato", "Wheat", "Potato",
+                  "Barley", "Carrot", "Barley", "Tomato", "Soybean", "Cotton", "Soybean", "Barley", "Cotton", "Cotton",
+                  "Rice", "Sugarcane", "Cotton", "Soybean", "Tomato", "Carrot", "Potato", "Potato", "Barley", "Tomato"],
+    "Farm_Area(acres)": [329.4, 18.67, 306.03, 380.21, 135.56, 12.5, 360.06, 464.6, 389.37, 184.37,
+                          279.95, 145.32, 329.1, 246.02, 305.15, 60.22, 284.01, 128.23, 460.93, 58.85,
+                          377.05, 92.67, 15.67, 483.88, 75.64, 162.28, 375.1, 256.19, 288.52, 286.52,
+                          136.16, 350.42, 446.76, 264.12, 266.03, 446.16, 156.1, 431.22, 220.48, 166.82,
+                          370.79, 418.99, 78.79, 84.12, 326.69, 112.8, 347.66, 77.39, 462.37, 292.25],
+    "Irrigation_Type": ["Sprinkler", "Manual", "Flood", "Rain-fed", "Sprinkler", "Sprinkler", "Drip", "Drip", "Drip", "Drip",
+                        "Drip", "Flood", "Drip", "Flood", "Rain-fed", "Flood", "Manual", "Rain-fed", "Drip", "Sprinkler",
+                        "Drip", "Flood", "Drip", "Drip", "Flood", "Flood", "Rain-fed", "Flood", "Manual", "Rain-fed",
+                        "Flood", "Flood", "Drip", "Drip", "Drip", "Manual", "Manual", "Drip", "Flood", "Rain-fed",
+                        "Flood", "Sprinkler", "Flood", "Manual", "Sprinkler", "Sprinkler", "Drip", "Sprinkler", "Sprinkler", "Rain-fed"],
+    "Fertilizer_Used(tons)": [8.14, 4.77, 2.91, 3.32, 8.33, 6.42, 1.83, 5.18, 0.57, 2.18,
+                               8.02, 3.01, 5.26, 1.01, 5.39, 2.19, 5.89, 4.91, 1.09, 3.61,
+                               5.95, 6.95, 9.95, 6.31, 6.69, 5.85, 0.5, 7.32, 1.79, 8.91,
+                               5.89, 8.4, 7.79, 4.75, 8.57, 4.35, 1.18, 5.71, 9.96, 2.85,
+                               8.18, 0.78, 1.35, 4.64, 5.24, 1.8, 3.86, 9.34, 2.3, 4.08],
+    "Pesticide_Used(kg)": [2.21, 4.36, 0.56, 4.35, 4.48, 2.25, 2.37, 0.91, 4.93, 2.67,
+                            1.24, 2.27, 0.83, 3.45, 2.15, 0.35, 0.81, 0.77, 1.31, 3.32,
+                            0.91, 3.64, 2.99, 2.29, 3.57, 2.42, 4.76, 2.19, 4.78, 0.77,
+                            1.36, 2.94, 0.96, 4.79, 1.35, 3.47, 4.43, 3.18, 2.91, 1.36,
+                            4.99, 0.58, 3.0, 2.53, 0.55, 1.01, 2.68, 3.0, 0.14, 0.76],
+    "Yield(tons)": [14.44, 42.91, 33.44, 34.08, 43.28, 38.18, 44.93, 4.23, 3.86, 17.25,
+                   32.85, 8.08, 5.44, 11.38, 28.77, 16.03, 47.7, 16.67, 39.96, 18.85,
+                   29.17, 30.7, 18.13, 34.46, 6.14, 24.63, 22.51, 48.02, 36.9, 30.5,
+                   11.86, 24.34, 46.47, 12.92, 34.45, 12.53, 40.15, 45.95, 10.53, 46.19,
+                   35.01, 26.29, 11.45, 24.77, 18.34, 31.57, 31.47, 20.53, 39.51, 45.14],
+    "Soil_Type": ["Loamy", "Peaty", "Silty", "Silty", "Clay", "Loamy", "Sandy", "Silty", "Peaty", "Sandy",
+                 "Clay", "Clay", "Clay", "Sandy", "Peaty", "Sandy", "Loamy", "Loamy", "Sandy", "Sandy",
+                 "Clay", "Clay", "Loamy", "Clay", "Silty", "Loamy", "Clay", "Silty", "Silty", "Loamy",
+                 "Clay", "Clay", "Loamy", "Loamy", "Silty", "Loamy", "Loamy", "Silty", "Clay", "Sandy",
+                 "Sandy", "Clay", "Sandy", "Sandy", "Peaty", "Clay", "Sandy", "Silty", "Clay", "Silty"],
+    "Season": ["Kharif", "Kharif", "Kharif", "Zaid", "Zaid", "Zaid", "Rabi", "Kharif", "Rabi", "Kharif",
+               "Zaid", "Kharif", "Zaid", "Rabi", "Kharif", "Zaid", "Zaid", "Rabi", "Zaid", "Kharif",
+               "Rabi", "Rabi", "Zaid", "Zaid", "Zaid", "Rabi", "Kharif", "Rabi", "Zaid", "Zaid",
+               "Zaid", "Rabi", "Zaid", "Rabi", "Zaid", "Zaid", "Zaid", "Kharif", "Zaid", "Zaid",
+               "Kharif", "Zaid", "Zaid", "Rabi", "Kharif", "Kharif", "Kharif", "Zaid", "Kharif", "Kharif"],
+    "Water_Usage(cubic meters)": [76648.2, 68725.54, 75538.56, 45401.23, 93718.69, 46487.98, 40583.57, 9392.38,
+                                   60202.14, 90922.15, 5869.75, 88976.51, 45922.35, 71953.14, 33615.77, 25132.48,
+                                   88301.46, 18660.03, 54314.28, 92481.89, 26743.55, 42874.34, 41862.86, 61383.07,
+                                   43847.82, 65838.4, 39362.44, 81313.04, 23208.04, 93407.38, 30098.35, 71580.87,
+                                   93656.06, 92745.01, 43610.21, 38874.28, 73646.55, 36065.94, 82549.03, 12007.7,
+                                   85208.71, 33705.69, 94754.73, 40614.4, 37466.11, 79966.1, 86989.88, 5874.17,
+                                   53879.87, 90232.08]
+}
+
+df = pd.DataFrame(data)
+
+# Tampilkan beberapa baris pertama
+print(pd.DataFrame(data))
